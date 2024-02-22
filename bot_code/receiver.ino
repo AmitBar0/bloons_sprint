@@ -5,12 +5,16 @@
 #define CSN_PIN 8
 #define INTERVAL_MS_SIGNAL_LOST 1000
 #define INTERVAL_MS_SIGNAL_RETRY 250
+
+#define POS_JOYSTICK_THRESHOLD 600
+#define NEG_JOYSTICK_THRESHOLD 400
+
 RF24 radio(CE_PIN, CSN_PIN);
 const byte address[6] = "00001";
 //NRF24L01 buffer limit is 32 bytes (max struct size)
 struct payload {
-   byte data1; z
-   char data2;
+   int rightValue;
+   int leftValue;
 };
 payload payload;
 unsigned long lastSignalMillis = 0;
@@ -32,19 +36,45 @@ void setup()
 }
 void loop()
 {
-   unsigned long currentMillis = millis();
-   if (radio.available() > 0) {
+    unsigned long currentMillis = millis();
+    if (radio.available() > 0) {
      radio.read(&payload, sizeof(payload));
      Serial.println("Received");
      Serial.print("Data1:");
-     Serial.println(payload.data1);
+     Serial.println(payload.rightValue);
      Serial.print("Data2:");
-     Serial.println(payload.data2);
+     Serial.println(payload.leftValue);
+
+
+     // move wheels
+    if(leftValue > POS_JOYSTICK_THRESHOLD){
+        Serial.println(" left going forward ");
+        left.writeMicroseconds(CW);
+    }else if(leftValue < NEG_JOYSTICK_THRESHOLD){
+        Serial.println(" left going backwards ");
+        left.writeMicroseconds(CCW);
+    }else {
+        Serial.println(" left stopped ");
+        left.writeMicroseconds(STOP);
+    }
+
+    if(rightValue > POS_JOYSTICK_THRESHOLD){
+        Serial.println(" right going forward ");
+        right.writeMicroseconds(CCW);
+    }else if(rightValue < NEG_JOYSTICK_THRESHOLD){
+        Serial.println(" right going backwards ");
+        right.writeMicroseconds(CW);
+    }else {
+        Serial.println(" right stopped ");
+        right.writeMicroseconds(STOP);
+    }
+
+
      lastSignalMillis = currentMillis;
-   }
-   if (currentMillis - lastSignalMillis > INTERVAL_MS_SIGNAL_LOST) {
+    }
+    if (currentMillis - lastSignalMillis > INTERVAL_MS_SIGNAL_LOST) {
      lostConnection();
-   }
+    }
 }
 void lostConnection()
 {
