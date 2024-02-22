@@ -14,6 +14,7 @@ void setup() {
   Serial.begin(9600);
   right.attach(A0);
   left.attach(A1);
+  Serial.setTimeout(10);
 }
 
 void loop() {

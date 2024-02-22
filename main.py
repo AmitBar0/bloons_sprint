@@ -1,7 +1,7 @@
 import serial
 
 BAUDRATE = 9600
-PORT = 'com7'
+PORT = 'com6'
 
 
 class DummyRobot:
