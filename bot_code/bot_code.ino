@@ -43,4 +43,5 @@ void loop() {
       right.writeMicroseconds(STOP);
     }
   }
+  Serial.flush();
 }
