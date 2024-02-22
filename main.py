@@ -1,7 +1,7 @@
 import serial
 
 BAUDRATE = 9600
-PORT = 'com8'
+PORT = 'com6'
 
 
 class DummyRobot:
@@ -20,7 +20,7 @@ class Robot:
 
     def arduino_write(self, s: str):
         print(f'writing: "{s}"')
-        self.arduino.write(s.encode())
+        self.arduino.write(s.encode(encoding='utf-8'))
 
     def arduino_read(self):
         output = str(self.arduino.readline())
@@ -28,19 +28,16 @@ class Robot:
         return output
 
 
-def dummy():
-    robot = DummyRobot()
+def dummy(robot):
     while True:
         command = input('Enter command: ')
         robot.arduino_write(command)
         print(robot.arduino_read())
 
 
-def main():
+def main(robot):
     import pygame
     import sys
-
-    robot = Robot()
 
     # Initialize Pygame
     pygame.init()
@@ -65,16 +62,16 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    robot.arduino_write("l")
+                    robot.arduino_write("1")
                 elif event.key == pygame.K_RIGHT:
-                    robot.arduino_write("r")
+                    robot.arduino_write("0")
                 elif event.key == pygame.K_UP:
-                    robot.arduino_write("f")
+                    robot.arduino_write("2")
                 elif event.key == pygame.K_DOWN:
-                    robot.arduino_write("b")
+                    robot.arduino_write("3")
             elif event.type == pygame.KEYUP:
                 if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
-                    robot.arduino_write("s")
+                    robot.arduino_write("4")
 
         # Fill the background with white
         screen.fill(WHITE)
@@ -91,4 +88,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    robot = Robot()
+    main(robot)
