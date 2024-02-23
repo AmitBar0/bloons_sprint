@@ -17,8 +17,8 @@ String inByte;
 
 void setup() {
   Serial.begin(9600);
-  right.attach(A0);
-  left.attach(A1);
+  right.attach(A1);
+  left.attach(A2);
   Serial.setTimeout(10);
 
   // pinMode(trigPin, OUTPUT);
