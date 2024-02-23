@@ -1,6 +1,7 @@
 #include "SPI.h"
 #include "RF24.h"
 #include "nRF24L01.h"
+#include "Servo.h"
 #define CE_PIN 7
 #define CSN_PIN 8
 #define INTERVAL_MS_SIGNAL_LOST 1000
@@ -8,6 +9,10 @@
 
 #define POS_JOYSTICK_THRESHOLD 600
 #define NEG_JOYSTICK_THRESHOLD 400
+
+const int STOP = 1500;
+const int CW = STOP - 500;
+const int CCW = STOP + 500;
 
 RF24 radio(CE_PIN, CSN_PIN);
 const byte address[6] = "00001";
@@ -18,6 +23,8 @@ struct payload {
 };
 payload payload;
 unsigned long lastSignalMillis = 0;
+Servo left;
+Servo right;
 void setup()
 {
    Serial.begin(115200);
@@ -47,10 +54,10 @@ void loop()
 
 
      // move wheels
-    if(leftValue > POS_JOYSTICK_THRESHOLD){
+    if(payload.leftValue > POS_JOYSTICK_THRESHOLD){
         Serial.println(" left going forward ");
         left.writeMicroseconds(CW);
-    }else if(leftValue < NEG_JOYSTICK_THRESHOLD){
+    }else if(payload.leftValue < NEG_JOYSTICK_THRESHOLD){
         Serial.println(" left going backwards ");
         left.writeMicroseconds(CCW);
     }else {
@@ -58,10 +65,10 @@ void loop()
         left.writeMicroseconds(STOP);
     }
 
-    if(rightValue > POS_JOYSTICK_THRESHOLD){
+    if(payload.rightValue > POS_JOYSTICK_THRESHOLD){
         Serial.println(" right going forward ");
         right.writeMicroseconds(CCW);
-    }else if(rightValue < NEG_JOYSTICK_THRESHOLD){
+    }else if(payload.rightValue < NEG_JOYSTICK_THRESHOLD){
         Serial.println(" right going backwards ");
         right.writeMicroseconds(CW);
     }else {

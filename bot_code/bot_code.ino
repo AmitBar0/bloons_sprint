@@ -7,6 +7,11 @@ int pos = 0;
 Servo right;
 Servo left;
 
+const int trigPin = 9;
+const int echoPin = 10;
+
+float duration, distance;
+
 String inByte;
 
 
@@ -15,6 +20,9 @@ void setup() {
   right.attach(A0);
   left.attach(A1);
   Serial.setTimeout(10);
+
+  // pinMode(trigPin, OUTPUT);
+  // pinMode(echoPin, INPUT);
 }
 
 void loop() {
@@ -44,5 +52,33 @@ void loop() {
       right.writeMicroseconds(STOP);
     }
   }
-  Serial.flush();
+
+  // digitalWrite(trigPin, LOW);  
+	// delayMicroseconds(2);  
+	// digitalWrite(trigPin, HIGH);  
+	// delayMicroseconds(10);  
+	// digitalWrite(trigPin, LOW);  
+
+  // duration = pulseIn(echoPin, HIGH);
+  // distance = (duration*.0343)/2;
+  // Serial.prnit("beep ");
+  // Serial.println(distance);
+  // delay(100);
 }
+
+long microsecondsToInches(long microseconds) {
+  // According to Parallax's datasheet for the PING))), there are 73.746
+  // microseconds per inch (i.e. sound travels at 1130 feet per second).
+  // This gives the distance travelled by the ping, outbound and return,
+  // so we divide by 2 to get the distance of the obstacle.
+  // See: https://www.parallax.com/package/ping-ultrasonic-distance-sensor-downloads/
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds) {
+  // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+  // The ping travels out and back, so to find the distance of the object we
+  // take half of the distance travelled.
+  return microseconds / 29 / 2;
+}
+
