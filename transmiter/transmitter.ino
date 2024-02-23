@@ -42,9 +42,9 @@ void loop()
     rightValue = analogRead(RIGHT_PIN);
     leftValue = analogRead(LEFT_PIN);
 
-    Serial.print("right = ")
+    Serial.print("right = ");
     Serial.print(rightValue);
-    Serial.print("left = ")
+    Serial.print("left = ");
     Serial.println(leftValue);
 
     payload.rightValue = rightValue;
